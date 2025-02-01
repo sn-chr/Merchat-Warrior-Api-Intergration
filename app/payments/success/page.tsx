@@ -45,30 +45,6 @@ export default function PaymentSuccess() {
             </p>
           </motion.div>
         </div>
-        
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 space-y-4"
-        >
-          <Button
-            onClick={() => router.push('/')}
-            className="w-full h-14 md:h-12 flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700"
-          >
-            <Home className="w-5 h-5" />
-            <span>Back to Home</span>
-          </Button>
-
-          <Button
-            onClick={() => router.back()}
-            variant="outline"
-            className="w-full flex items-center justify-center space-x-2"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Go Back</span>
-          </Button>
-        </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}

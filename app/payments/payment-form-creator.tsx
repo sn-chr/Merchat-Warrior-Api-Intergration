@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { CreditCard, ArrowLeft, Info } from "lucide-react"
+import { CreditCard, ArrowLeft, Info, X } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import type { BookingType, Addon } from "./types"
 import { AddonSelector } from "./components/addon-selector"
@@ -20,6 +20,7 @@ import { PAYMENT_CARDS } from "./constants"
 import { formatCardNumber, formatExpiryDate, validateCardNumber, validateExpiryDate, getCardType, formatCVC, validateCVC, getCVCLength, getCVCPlaceholder } from "./utils"
 import { processPayment } from "./services/merchant-warrior"
 import { useToast } from "@/hooks/use-toast"
+import { motion } from "framer-motion"
 
 export default function PaymentFormCreator() {
   // Basic form state
@@ -109,8 +110,8 @@ export default function PaymentFormCreator() {
       total += Number(securityDeposit) || 0
     }
 
-    // Add accommodation fee for direct bookings only
-    if (bookingType === "direct") {
+    // Add accommodation fee
+    if (accommodationFee) {
       total += Number(accommodationFee) || 0
     }
 
@@ -403,300 +404,308 @@ export default function PaymentFormCreator() {
       </Card>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="max-w-[95vw] w-full md:max-w-2xl mx-4 h-[90vh] md:h-auto overflow-y-auto">
-          <DialogHeader className="px-4 md:px-8 py-4 md:py-6 border-b bg-gradient-to-b from-indigo-50/50 to-white sticky top-0 z-10">
-            <div className="flex items-center space-x-3">
-              {dialogStep === "payment" && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => setDialogStep("review")}
-                  className="h-8 w-8 rounded-full hover:bg-indigo-100"
-                >
-                  <ArrowLeft className="h-4 w-4 text-indigo-600" />
-                </Button>
-              )}
-              <div>
-                <DialogTitle className="text-2xl font-semibold text-indigo-950">
-                  {dialogStep === "review" ? "Review Booking Details" : "Complete Payment"}
-                </DialogTitle>
-                <DialogDescription className="text-muted-foreground mt-1">
-                  {dialogStep === "review"
-                    ? "Please review your booking details before proceeding to payment"
-                    : "Enter your payment information securely"}
-                </DialogDescription>
-              </div>
-            </div>
-
-            {/* Progress indicator */}
-            <div className="absolute right-8 top-8 flex items-center space-x-2">
-              <div className="flex space-x-1.5">
-                <div 
-                  className={cn(
-                    "h-2 w-12 rounded-full transition-colors duration-300",
-                    dialogStep === "review" ? "bg-indigo-600" : "bg-indigo-100"
-                  )} 
-                />
-                <div 
-                  className={cn(
-                    "h-2 w-12 rounded-full transition-colors duration-300",
-                    dialogStep === "payment" ? "bg-indigo-600" : "bg-indigo-100"
-                  )} 
-                />
-              </div>
-            </div>
-          </DialogHeader>
-
-          <div className="p-4 md:p-8 overflow-y-auto">
-            {dialogStep === "review" ? (
-              <div className="space-y-6">
-                <div className="rounded-xl border bg-card p-6 shadow-sm">
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="space-y-1">
-                      <h3 className="font-semibold text-2xl text-indigo-950">Booking Summary</h3>
-                      <p className="text-sm text-muted-foreground">Booking ID: {bookingId}</p>
-                      <p className="text-sm text-muted-foreground">Guest: {guestName}</p>
-                    </div>
-                    <Badge 
-                      variant="secondary" 
-                      className="capitalize bg-indigo-100 text-indigo-700 hover:bg-indigo-100/80"
+        <DialogContent className="p-0 w-full md:max-w-2xl rounded-none md:rounded-lg">
+          {/* Header with animation */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <DialogHeader className="px-4 py-4 border-b bg-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {dialogStep === "payment" && (
+                    <motion.div
+                      initial={{ x: -10, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{ x: -10, opacity: 0 }}
                     >
-                      {bookingType}
-                    </Badge>
-                  </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDialogStep("review")}
+                        className="h-8 w-8 -ml-2"
+                      >
+                        <ArrowLeft className="h-4 w-4" />
+                      </Button>
+                    </motion.div>
+                  )}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <DialogTitle className="text-lg font-semibold">
+                      {dialogStep === "review" ? "Review Booking" : "Payment"}
+                    </DialogTitle>
+                  </motion.div>
+                </div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowDialog(false)}
+                    className="h-8 w-8"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </motion.div>
+              </div>
+            </DialogHeader>
+          </motion.div>
 
-                  <div className="space-y-4">
-                    {bookingType !== "airbnb" && (
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-indigo-950">Security Deposit</span>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <Info className="h-4 w-4 text-indigo-400" />
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-indigo-950 text-white">
-                                <p>Refundable within 7 days after check-out</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                        <span className="font-medium text-indigo-950">${securityDeposit}</span>
+          {/* Steps indicator with animation */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+            className="px-4 py-3 border-b bg-white"
+          >
+            <div className="flex items-center justify-between">
+              <motion.div 
+                className="flex items-center gap-3"
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <div 
+                  className={cn(
+                    "h-7 w-7 rounded-full flex items-center justify-center text-sm transition-colors duration-300",
+                    dialogStep === "review" 
+                      ? "bg-indigo-600 text-white" 
+                      : "bg-indigo-100 text-indigo-600"
+                  )}
+                >
+                  1
+                </div>
+                <span className="text-sm">Review</span>
+              </motion.div>
+              <motion.div 
+                className="flex-1 h-[2px] bg-indigo-100 mx-4"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 0.4, duration: 0.4 }}
+              />
+              <motion.div 
+                className="flex items-center gap-3"
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <div 
+                  className={cn(
+                    "h-7 w-7 rounded-full flex items-center justify-center text-sm transition-colors duration-300",
+                    dialogStep === "payment" 
+                      ? "bg-indigo-600 text-white" 
+                      : "bg-indigo-100 text-indigo-600"
+                  )}
+                >
+                  2
+                </div>
+                <span className="text-sm">Payment</span>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Content with staggered animations */}
+          <motion.div 
+            key={dialogStep}
+            initial={{ opacity: 0, x: dialogStep === "payment" ? 20 : -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: dialogStep === "payment" ? -20 : 20 }}
+            transition={{ duration: 0.3 }}
+            className="p-4"
+          >
+            {dialogStep === "review" ? (
+              <motion.div 
+                className="space-y-4"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.1
+                    }
+                  }
+                }}
+              >
+                <motion.div 
+                  className="bg-white rounded-lg border border-gray-200"
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                  }}
+                >
+                  <div className="p-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-medium">Booking Summary</h3>
+                      <Badge variant="secondary" className="capitalize">
+                        {bookingType}
+                      </Badge>
+                    </div>
+
+                    <div className="mt-4 space-y-3">
+                      {/* Booking details */}
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-500">Booking ID</span>
+                        <span>{bookingId}</span>
                       </div>
-                    )}
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-500">Guest</span>
+                        <span>{guestName}</span>
+                      </div>
 
-                    {/* Additional fees section */}
-                    {(earlyCheckIn || lateCheckOut) && (
-                      <>
-                        <Separator className="bg-indigo-100" />
-                        <div className="space-y-3">
-                          <p className="font-medium text-indigo-950">Additional Fees</p>
-                          {earlyCheckIn && (
-                            <div className="flex justify-between text-sm">
-                              <span className="text-indigo-600">Early Check-in ({earlyCheckIn}h)</span>
-                              <span className="font-medium">${Number(earlyCheckIn) * 60}</span>
-                            </div>
-                          )}
-                          {lateCheckOut && (
-                            <div className="flex justify-between text-sm">
-                              <span className="text-indigo-600">Late Check-out ({lateCheckOut}h)</span>
-                              <span className="font-medium">${Number(lateCheckOut) * 60}</span>
-                            </div>
-                          )}
+                      {/* Security Deposit */}
+                      {bookingType !== "airbnb" && securityDeposit && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-500">Security Deposit</span>
+                          <span>${securityDeposit}</span>
                         </div>
-                      </>
-                    )}
+                      )}
 
-                    {/* Selected addons section */}
-                    {selectedAddons.length > 0 && (
-                      <>
-                        <Separator className="bg-indigo-100" />
-                        <div className="space-y-3">
-                          <p className="font-medium text-indigo-950">Selected Add-ons</p>
-                          {selectedAddons.map((addonName) => {
-                            const addon = addons.find((a) => a.name === addonName)
-                            return (
-                              <div key={addonName} className="flex justify-between text-sm">
-                                <span className="text-indigo-600">{addonName}</span>
-                                <span className="font-medium">${addon?.price}</span>
-                              </div>
-                            )
-                          })}
+                      {/* Accommodation Fee */}
+                      {accommodationFee && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-500">Accommodation Fee</span>
+                          <span>${accommodationFee}</span>
                         </div>
-                      </>
-                    )}
-
-                    <Separator className="bg-indigo-100" />
-                    <div className="flex justify-between items-center pt-2">
-                      <span className="font-semibold text-lg text-indigo-950">Total Amount</span>
-                      <span className="font-semibold text-lg text-indigo-600">${calculateTotal()}</span>
+                      )}
                     </div>
                   </div>
-                </div>
 
-                <Button 
-                  className="w-full h-14 md:h-12 text-base md:text-lg font-medium bg-indigo-600 hover:bg-indigo-700"
-                  onClick={() => setDialogStep("payment")}
-                >
-                  Proceed to Payment
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold text-lg text-indigo-950">Payment Information</h3>
-                  <div className="flex items-center gap-2 flex-wrap justify-end">
-                    {PAYMENT_CARDS.map((card) => (
-                      <div
-                        key={card.name}
-                        className="relative group"
-                      >
-                        <img 
-                          src={card.logo} 
-                          alt={card.name}
-                          className={cn(
-                            "h-8 transition-all duration-200",
-                            cardType === card.name.toLowerCase() 
-                              ? "grayscale-0 scale-110" 
-                              : "grayscale opacity-50 hover:opacity-75 hover:grayscale-0"
-                          )}
-                        />
-                        <div className={cn(
-                          "absolute -bottom-6 left-1/2 -translate-x-1/2 transition-all duration-200 text-xs whitespace-nowrap",
-                          cardType === card.name.toLowerCase()
-                            ? "opacity-100 text-indigo-600 font-medium"
-                            : "opacity-0 group-hover:opacity-100 text-muted-foreground"
-                        )}>
-                          {card.name}
-                        </div>
-                      </div>
-                    ))}
+                  {/* Total */}
+                  <div className="p-4 border-t">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Total Amount</span>
+                      <span className="text-lg font-semibold text-indigo-600">
+                        ${calculateTotal()}
+                      </span>
+                    </div>
                   </div>
-                </div>
+                </motion.div>
 
-                <div className="space-y-4">
+                <motion.button
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                  }}
+                  className="w-full"
+                >
+                  <Button 
+                    className="w-full h-14 text-base font-medium bg-indigo-600 mt-4"
+                    onClick={() => setDialogStep("payment")}
+                  >
+                    Proceed to Payment
+                  </Button>
+                </motion.button>
+              </motion.div>
+            ) : (
+              <motion.div 
+                className="space-y-6"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.1
+                    }
+                  }
+                }}
+              >
+                <motion.div 
+                  className="space-y-4"
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                  }}
+                >
                   <div className="space-y-2">
                     <Label htmlFor="card-name" className="text-indigo-950">Name on Card</Label>
                     <Input 
-                      id="card-name" 
+                      id="card-name"
                       value={guestName}
-                      onChange={(e) => {
-                        setGuestName(e.target.value)
-                        setErrors(prev => ({ ...prev, cardName: "" }))
-                      }}
-                      placeholder="Enter name as shown on card" 
-                      className={cn(
-                        "h-12 border-indigo-100 focus:border-indigo-500 focus:ring-indigo-500/20",
-                        errors.cardName && "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                      )}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      placeholder="Enter name as shown on card"
+                      className="h-12"
                     />
-                    {errors.cardName && (
-                      <p className="text-sm text-red-500 mt-1">{errors.cardName}</p>
-                    )}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="card-number" className="text-indigo-950">Card Number</Label>
                     <div className="relative">
                       <Input 
-                        id="card-number" 
+                        id="card-number"
                         value={cardNumber}
                         onChange={handleCardNumberChange}
-                        placeholder="1234 5678 9012 3456" 
-                        className={cn(
-                          "h-14 md:h-12 pl-12 pr-12 font-mono text-base",
-                          "border-indigo-100 focus:border-indigo-500 focus:ring-indigo-500/20",
-                          errors.cardNumber && "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                        )}
-                        maxLength={19}
+                        placeholder="1234 5678 9012 3456"
+                        className="h-12 pl-12"
                       />
-                      <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-400 h-5 w-5" />
-                      {cardType && (
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                          <img 
-                            src={`/${cardType}.svg`} 
-                            alt={cardType} 
-                            className="h-6 w-auto"
-                          />
-                        </div>
-                      )}
+                      <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
                     </div>
-                    {errors.cardNumber && (
-                      <p className="text-sm text-red-500 mt-1">{errors.cardNumber}</p>
-                    )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="expiry" className="text-indigo-950">Expiry Date</Label>
                       <Input 
-                        id="expiry" 
+                        id="expiry"
                         value={expiryDate}
                         onChange={handleExpiryDateChange}
-                        placeholder="MM/YY" 
-                        className={cn(
-                          "h-12 font-mono border-indigo-100 focus:border-indigo-500 focus:ring-indigo-500/20",
-                          errors.expiryDate && "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                        )}
-                        maxLength={5}
+                        placeholder="MM/YY"
+                        className="h-12"
                       />
-                      {errors.expiryDate && (
-                        <p className="text-sm text-red-500 mt-1">{errors.expiryDate}</p>
-                      )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="cvc" className="text-indigo-950">
-                        CVC
-                        {cardType === 'amex' && (
-                          <span className="ml-1 text-sm text-muted-foreground">(4 digits)</span>
-                        )}
-                      </Label>
-                      <div className="relative">
-                        <Input 
-                          id="cvc" 
-                          value={cvc}
-                          onChange={handleCVCChange}
-                          placeholder={getCVCPlaceholder(cardType)}
-                          type="password"
-                          className={cn(
-                            "h-12 font-mono border-indigo-100 focus:border-indigo-500 focus:ring-indigo-500/20",
-                            errors.cvc && "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                          )}
-                          maxLength={getCVCLength(cardType)}
-                        />
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>The 3 or 4 digit security code on the {cardType === 'amex' ? 'front' : 'back'} of your card</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      {errors.cvc && (
-                        <p className="text-sm text-red-500 mt-1">{errors.cvc}</p>
-                      )}
+                      <Label htmlFor="cvc" className="text-indigo-950">CVC</Label>
+                      <Input 
+                        id="cvc"
+                        value={cvc}
+                        onChange={handleCVCChange}
+                        placeholder="123"
+                        type="password"
+                        className="h-12"
+                      />
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
-                <Button 
-                  className="w-full h-14 md:h-12 text-base md:text-lg font-medium bg-indigo-600 hover:bg-indigo-700"
-                  onClick={handlePayment}
-                  disabled={isProcessing || calculateTotal() <= 0}
+                <motion.button
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                  }}
+                  className="w-full"
                 >
-                  {isProcessing ? "Processing..." : calculateTotal() <= 0 ? "No amount to pay" : `Pay $${calculateTotal()}`}
-                </Button>
+                  <Button 
+                    className="w-full h-14 text-base font-medium bg-indigo-600"
+                    onClick={handlePayment}
+                    disabled={isProcessing || calculateTotal() <= 0}
+                  >
+                    {isProcessing ? "Processing..." : `Pay $${calculateTotal()}`}
+                  </Button>
+                </motion.button>
 
-                <div className="flex items-center justify-center space-x-2 text-sm text-indigo-600">
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: { opacity: 1 }
+                  }}
+                  className="flex items-center justify-center space-x-2 text-sm text-indigo-600"
+                >
                   <CreditCard className="h-4 w-4" />
                   <p>Your payment information is encrypted and secure</p>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         </DialogContent>
       </Dialog>
     </div>
