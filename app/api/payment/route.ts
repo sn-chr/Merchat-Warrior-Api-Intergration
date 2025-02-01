@@ -140,7 +140,7 @@ export async function POST(request: Request) {
       customerCity: customerDetails.city || 'Camberwell',
       customerAddress: customerDetails.address || '3/689 Burke Rd Camberwell',
       customerPostCode: customerDetails.postCode || '4000',
-      customerEmail: customerDetails.email || 'jacob@megastyleapartments.com.au',
+      customerEmail: customerDetails.email || 'jasondaviswb@gmail.com',
       paymentCardNumber: cardNumber.replace(/\s/g, ''),
       paymentCardName: cardName,
       paymentCardExpiry: `${expiryMonth}${expiryYear}`,
