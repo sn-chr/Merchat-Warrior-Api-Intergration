@@ -23,12 +23,12 @@ export function SecurityDepositSelector({
   return (
     <div className="space-y-4">
       <Label className="text-indigo-950 block text-center">Security Deposit</Label>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Button
           type="button"
           variant="outline"
           className={cn(
-            "h-auto p-4 border-2",
+            "h-auto p-4 border-2 w-full",
             option === "600" && "border-indigo-600 bg-indigo-50"
           )}
           onClick={() => onOptionChange("600")}
@@ -43,7 +43,7 @@ export function SecurityDepositSelector({
           type="button"
           variant="outline"
           className={cn(
-            "h-auto p-4 border-2",
+            "h-auto p-4 border-2 w-full",
             option === "800" && "border-indigo-600 bg-indigo-50"
           )}
           onClick={() => onOptionChange("800")}
@@ -58,7 +58,7 @@ export function SecurityDepositSelector({
           type="button"
           variant="outline"
           className={cn(
-            "h-auto p-4 border-2",
+            "h-auto p-4 border-2 w-full",
             option === "1000" && "border-indigo-600 bg-indigo-50"
           )}
           onClick={() => onOptionChange("1000")}
@@ -73,7 +73,7 @@ export function SecurityDepositSelector({
           type="button"
           variant="outline"
           className={cn(
-            "h-auto p-4 border-2",
+            "h-auto p-4 border-2 w-full",
             option === "other" && "border-indigo-600 bg-indigo-50"
           )}
           onClick={() => onOptionChange("other")}
@@ -92,7 +92,7 @@ export function SecurityDepositSelector({
             placeholder="Enter custom amount"
             value={customValue}
             onChange={(e) => onCustomChange(e.target.value)}
-            className="h-12"
+            className="h-14 md:h-12 text-base"
           />
         </div>
       )}

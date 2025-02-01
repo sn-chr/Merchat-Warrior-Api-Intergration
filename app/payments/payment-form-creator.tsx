@@ -293,10 +293,10 @@ export default function PaymentFormCreator() {
   }
 
   return (
-    <div className="p-8 flex justify-center">
-      <Card className="grid grid-cols-[320px,1fr] overflow-hidden w-[1000px]">
+    <div className="p-4 md:p-8 w-full flex justify-center min-h-screen">
+      <Card className="w-full max-w-[1000px] grid grid-cols-1 md:grid-cols-[320px,1fr] overflow-hidden">
         {/* Left Side - Booking Type */}
-        <div className="bg-gradient-to-b from-indigo-50/50 to-white border-r border-border p-8">
+        <div className="bg-gradient-to-b from-indigo-50/50 to-white border-b md:border-b-0 md:border-r border-border p-6 md:p-8">
           <div className="flex flex-col items-center h-full space-y-6">
             <div className="text-center">
               <h3 className="font-semibold text-xl text-indigo-950">Booking Type</h3>
@@ -309,7 +309,7 @@ export default function PaymentFormCreator() {
         </div>
 
         {/* Right Side - Form Fields */}
-        <div className="p-8">
+        <div className="p-6 md:p-8">
           <div>
             <div className="text-center mb-8">
               <h2 className="text-2xl font-semibold text-indigo-950">
@@ -403,8 +403,8 @@ export default function PaymentFormCreator() {
       </Card>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden">
-          <DialogHeader className="px-8 py-6 border-b bg-gradient-to-b from-indigo-50/50 to-white">
+        <DialogContent className="max-w-[95vw] w-full md:max-w-2xl mx-4 h-[90vh] md:h-auto overflow-y-auto">
+          <DialogHeader className="px-4 md:px-8 py-4 md:py-6 border-b bg-gradient-to-b from-indigo-50/50 to-white sticky top-0 z-10">
             <div className="flex items-center space-x-3">
               {dialogStep === "payment" && (
                 <Button 
@@ -447,7 +447,7 @@ export default function PaymentFormCreator() {
             </div>
           </DialogHeader>
 
-          <div className="p-8">
+          <div className="p-4 md:p-8 overflow-y-auto">
             {dialogStep === "review" ? (
               <div className="space-y-6">
                 <div className="rounded-xl border bg-card p-6 shadow-sm">
@@ -535,7 +535,7 @@ export default function PaymentFormCreator() {
                 </div>
 
                 <Button 
-                  className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-lg font-medium" 
+                  className="w-full h-14 md:h-12 text-base md:text-lg font-medium bg-indigo-600 hover:bg-indigo-700"
                   onClick={() => setDialogStep("payment")}
                 >
                   Proceed to Payment
@@ -604,7 +604,8 @@ export default function PaymentFormCreator() {
                         onChange={handleCardNumberChange}
                         placeholder="1234 5678 9012 3456" 
                         className={cn(
-                          "h-12 pl-12 pr-12 font-mono border-indigo-100 focus:border-indigo-500 focus:ring-indigo-500/20",
+                          "h-14 md:h-12 pl-12 pr-12 font-mono text-base",
+                          "border-indigo-100 focus:border-indigo-500 focus:ring-indigo-500/20",
                           errors.cardNumber && "border-red-500 focus:border-red-500 focus:ring-red-500/20"
                         )}
                         maxLength={19}
@@ -682,7 +683,7 @@ export default function PaymentFormCreator() {
                 </div>
 
                 <Button 
-                  className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-lg font-medium"
+                  className="w-full h-14 md:h-12 text-base md:text-lg font-medium bg-indigo-600 hover:bg-indigo-700"
                   onClick={handlePayment}
                   disabled={isProcessing || calculateTotal() <= 0}
                 >

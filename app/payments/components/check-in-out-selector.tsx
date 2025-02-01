@@ -19,10 +19,10 @@ export function CheckInOutSelector({
 }: CheckInOutSelectorProps) {
   return (
     <div className="space-y-6 font-sans">
-      <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/50 to-white p-6 shadow-sm">
-        <h3 className="mb-4 font-semibold text-lg text-indigo-950">Check-in/out Options</h3>
+      <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/50 to-white p-4 md:p-6 shadow-sm">
+        <h3 className="mb-4 font-semibold text-base md:text-lg text-indigo-950">Check-in/out Options</h3>
         
-        <div className="grid gap-6">
+        <div className="grid gap-4 md:gap-6">
           {/* Early Check-in Section */}
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
@@ -50,13 +50,7 @@ export function CheckInOutSelector({
                 placeholder="Number of hours (60$/hr)"
                 value={earlyCheckIn}
                 onChange={(e) => onEarlyCheckInChange(e.target.value)}
-                className={cn(
-                  "h-12 pl-4 pr-20 text-indigo-950 placeholder:text-indigo-300",
-                  "border-indigo-100 focus:border-indigo-500 focus:ring-indigo-500/20",
-                  "transition-all duration-200",
-                  "rounded-lg",
-                  earlyCheckIn && "border-indigo-500 ring-2 ring-indigo-500/20"
-                )}
+                className="h-14 md:h-12 text-base"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-indigo-400">
                 Hours
@@ -101,13 +95,7 @@ export function CheckInOutSelector({
                 placeholder="Number of hours (60$/hr)"
                 value={lateCheckOut}
                 onChange={(e) => onLateCheckOutChange(e.target.value)}
-                className={cn(
-                  "h-12 pl-4 pr-20 text-indigo-950 placeholder:text-indigo-300",
-                  "border-indigo-100 focus:border-indigo-500 focus:ring-indigo-500/20",
-                  "transition-all duration-200",
-                  "rounded-lg",
-                  lateCheckOut && "border-indigo-500 ring-2 ring-indigo-500/20"
-                )}
+                className="h-14 md:h-12 text-base"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-indigo-400">
                 Hours

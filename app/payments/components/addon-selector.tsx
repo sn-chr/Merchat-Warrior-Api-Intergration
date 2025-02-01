@@ -58,7 +58,7 @@ export function AddonSelector({
 
   return (
     <div className="space-y-6 font-sans">
-      <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/50 to-white p-6 shadow-sm">
+      <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/50 to-white p-4 md:p-6 shadow-sm">
         {showAccommodationFee && (
           <>
             <div className="flex items-center space-x-2 mb-6">
@@ -187,7 +187,7 @@ export function AddonSelector({
             <div
               key={addon.name}
               className={cn(
-                "flex items-center justify-between rounded-lg border p-4 transition-colors",
+                "flex items-center justify-between rounded-lg border p-3 md:p-4 transition-colors",
                 "border-indigo-100 hover:border-indigo-200 hover:bg-indigo-50/50",
                 selectedAddons.includes(addon.name) && "border-indigo-500 bg-indigo-50/80"
               )}

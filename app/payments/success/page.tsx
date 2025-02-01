@@ -10,12 +10,12 @@ export default function PaymentSuccess() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
       <motion.div 
         initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg"
+        className="w-full max-w-md space-y-8 p-6 md:p-8 bg-white rounded-lg shadow-lg"
       >
         <div className="text-center">
           <motion.div
@@ -54,7 +54,7 @@ export default function PaymentSuccess() {
         >
           <Button
             onClick={() => router.push('/')}
-            className="w-full flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700"
+            className="w-full h-14 md:h-12 flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700"
           >
             <Home className="w-5 h-5" />
             <span>Back to Home</span>
